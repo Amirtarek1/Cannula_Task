@@ -4,11 +4,14 @@ import Correct_Checkbox from "../assets/Icons/Correct_Checkbox.svg"
 import { scale } from 'react-native-size-matters';
 import { COLORS, FONT } from '../Constants/themes';
 import { RFPercentage } from 'react-native-responsive-fontsize';
+import { useNavigation } from '@react-navigation/native';
 
 const Confirmation_Dialog = () => {
     const [showModal, setShowModal] = useState(true);
+    const navigation = useNavigation();
 
     const handleClose = () => {
+        navigation.navigate("Home_Page")
         setShowModal(false);
     };
 

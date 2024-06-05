@@ -6,10 +6,12 @@ import { FONT, COLORS } from '../../Constants/themes';
 import { scale } from 'react-native-size-matters';
 import Price_Component from '../../Component/Price_Component';
 import Main_Button from '../../Component/Main_Button';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 const Price_Visita = () => {
+    const navigation = useNavigation();
 
 
 
@@ -39,7 +41,7 @@ const Price_Visita = () => {
                 elevation: 10,
                 shadowOpacity: .7,
             }}>
-                <Main_Button Title_Button={"التالي"}/>
+                <Main_Button Title_Button={"التالي"}  confirm={()=>navigation.navigate("Clinic_Visita")}/>
 
             </View>
         </>

@@ -29,10 +29,8 @@ const Checkboxs_Compnent = ({ Type_visita ,  inClinic, atHome,handleCheckbox  })
             }}>
                 <TouchableOpacity
                     style={{ marginHorizontal: scale(10) }}
-                    // onPress={() => setCheckbox_type(prevState => !prevState)}
                     onPress={handleCheckbox}
                     >
-{/* atHome || inClinic ?  Checkbox_type ?*/}
                     {atHome || inClinic ? (<>
                         <Correct_Checkbox width={scale(30)} height={scale(30)} />
                     </>) :

@@ -6,14 +6,14 @@ import { scale } from 'react-native-size-matters';
 
 
 
-const Main_Button = ({Title_Button , Press_action}) => {
+const Main_Button = ({Title_Button , confirm}) => {
 
 
 
     return (
         <>
 
-            <TouchableOpacity  onPress={Press_action}
+            <TouchableOpacity onPress={confirm}
             
             style={{shadowColor: COLORS.Title_Color,
                 elevation: 4,
@@ -21,7 +21,8 @@ const Main_Button = ({Title_Button , Press_action}) => {
                 width: scale(310), alignSelf:"center", margin:scale(20),
                 backgroundColor: COLORS.Second_Color_Blue , borderRadius:scale(8)
             }}>
-                <Text style={{ color: COLORS.Main_Color_White, textAlign: "center", padding: scale(12), fontFamily: FONT.font_Almarai_Regular }}>{Title_Button}</Text>
+                <Text style={{ color: COLORS.Main_Color_White, textAlign: "center",
+                 padding: scale(12), fontFamily: FONT.font_Almarai_Regular }}>{Title_Button}</Text>
             </TouchableOpacity>
 
         </>

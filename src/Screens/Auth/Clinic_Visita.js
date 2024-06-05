@@ -11,12 +11,15 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import Main_Button from '../../Component/Main_Button';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Checkbox from "../../assets/Icons/Checkbox.svg";
+import { useNavigation } from '@react-navigation/native';
 
 
 
 
 
 const Clinic_Visita = ({ Flow_one }) => {
+    const navigation = useNavigation();
+
     const initialTimes = {
         sun: [{ from: '9 : 00 ص', to: '12 : 00 م' }],
         mon: [{ from: '9 : 00 ص', to: '12 : 00 م' }],
@@ -373,7 +376,7 @@ const Clinic_Visita = ({ Flow_one }) => {
                 elevation: 10,
                 shadowOpacity: .7,
             }}>
-                <Main_Button Title_Button={"التالي"} />
+                <Main_Button Title_Button={"التالي"} confirm={()=>navigation.navigate("Home_visita")} />
             </View>
         </>
     );

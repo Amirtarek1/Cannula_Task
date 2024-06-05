@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import TextInput_Component from '../../Component/TextInput_Component';
@@ -17,18 +17,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get_All_Specializations } from '../../Redux/Reducers/Get_Specializations';
 import { get_allgovernments } from '../../Redux/Reducers/Get_Egypt_Governments';
 import { Cities, Governments } from '../../Dummy/Util';
+import { useNavigation } from '@react-navigation/native';
+import { post_doctor } from '../../Redux/Reducers/Post_Inform_Doctor';
+import Confirmation_Dialog from '../../Component/Confirmation_Dialog';
 
 
 
 
 const Apply_to_Join = () => {
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(get_All_Specializations());
-    }, [dispatch]);
-    const { allspecializations } = useSelector((state) => state.specializations);
 
 
     // useEffect(() => {
@@ -38,23 +34,70 @@ const Apply_to_Join = () => {
 
 
     // console.log(allgovernments, "app box gov ")
+    const navigation = useNavigation();
 
+
+    const [confirmationVisible, setConfirmationVisible] = useState(false);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(get_All_Specializations());
+    }, [dispatch]);
+    const { allspecializations } = useSelector((state) => state.specializations);
+
+
+
+
+
+
+
+    const [image, setImage] = useState(null);
+    const [file, setfile] = useState(null);
+    const [uploadedFileName, setUploadedFileName] = useState('');
 
    
 
 
+    const {
+        handleChange,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+    } = useFormik({
+        validationSchema: Signupschemaformik,
+        initialValues: Sign_up_initial_values,
+        onSubmit: async (values) => {
+            try {
+                const response = await dispatch(
+                    post_doctor({
+                        first_name: values.first_name,
+                        last_name: values.last_name,
+                        name: values.first_name + values.last_name,
+                        image: image.uri,
+                        specialization: values.specialization,
+                        governorate: values.governorate,
+                        city: values.city,
+                        address: values.address,
+                        certificate: file,
+                        phoneNumber: values.phoneNumber,
+                        email: values.email,
+                        inClinic: values.inClinic,
+                        atHome: values.atHome,
+                        pushToken: "catonkeyboard",
+                    })
+                ).unwrap();
 
-    const { handleChange, handleSubmit, values, errors, touched } =
-        useFormik({
-            validationSchema: Signupschemaformik,
-            initialValues: Sign_up_initial_values,
-            onSubmit: () => {
-                console.log(values)
-            },
-        });
-
-    const [image, setImage] = useState(null);
-
+                if (!response.error && Object.keys(errors).length === 0) {
+                    setConfirmationVisible(true); 
+                } else {
+                    alert('Please check your input and try again');
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        },
+    });
     const [atHome, setAtHome] = useState(false);
     const [inClinic, setInClinic] = useState(false);
 
@@ -67,12 +110,19 @@ const Apply_to_Join = () => {
     };
 
 
+    const handleFile = (selectedfile) => {
+        setfile(selectedfile);
+        setUploadedFileName(selectedfile.name);
+    };
 
     const handleImageSelected = (selectedImage) => {
         setImage(selectedImage);
     };
 
-
+    // const handleConfirmationClose = () => {
+    //     setConfirmationVisible(false);
+    //     navigation.navigate('Home');
+    //   };
 
 
     doc = [{
@@ -176,9 +226,6 @@ const Apply_to_Join = () => {
                                 }}>الإتاحيه للكشف</Text>
 
 
-                                {/* <Checkboxs_Compnent Type_visita={"كشف منزلى"} atHome={false} />
-                                <Checkboxs_Compnent Type_visita={"كشف في العياده"} /> */}
-
                                 <Checkboxs_Compnent Type_visita={"كشف منزلى"} atHome={atHome} handleCheckbox={() => handleCheckbox('atHome')} />
                                 <Checkboxs_Compnent Type_visita={"كشف في العياده"} inClinic={inClinic} handleCheckbox={() => handleCheckbox('inClinic')} />
 
@@ -194,7 +241,13 @@ const Apply_to_Join = () => {
 
 
 
-                                <Upload_File />
+                                <Upload_File onFileSelected={handleFile} />
+                                {file && <Text style={{
+                                    fontFamily: FONT.font_Almarai_Regular,
+                                    alignSelf: "center",
+                                    fontSize: scale(16),
+                                    color: COLORS.Title_Color
+                                }} >{uploadedFileName} Uploaded</Text>}
 
                             </View>
                         </View>
@@ -203,6 +256,7 @@ const Apply_to_Join = () => {
                 />
 
             </SafeAreaProvider>
+
             <View style={{
                 backgroundColor: COLORS.Main_Color_White,
                 shadowOffset: { height: 30, width: 100 },
@@ -210,10 +264,11 @@ const Apply_to_Join = () => {
                 elevation: 10,
                 shadowOpacity: .7,
             }}>
-                <Main_Button Title_Button={"ارسال"} Press_action={() => { }} />
-                {/*  */}
+                <Main_Button Title_Button={"ارسال"} confirm={()=>navigation.navigate("Confirmation_Dialog")} />
+
+{/* handleSubmit */}
+
             </View>
-            {/* console.log(values) */}
         </>
     );
 };
@@ -221,44 +276,3 @@ const Apply_to_Join = () => {
 export default Apply_to_Join;
 
 
-
-// const [image, setImage] = useState(null);
-
-// const handleFileSelected = (selectedFile) => {
-//     setFile(selectedFile);
-// };
-
-// const handleImageSelected = (selectedImage) => {
-//     setImage(selectedImage);
-// };
-// const handleImageUpload = async () => {
-//     if (!image) return;
-
-//     const imageName = `${Date.now()}_image.png`;
-//     const uploadUrl = `https://cannula-frontend-task.s3.eu-west-1.wasabisys.com/profiles/${imageName}`;
-
-//     const formData = new FormData();
-//     formData.append('image', {
-//         uri: image.uri,
-//         name: imageName,
-//         type: image.type,
-//     });
-
-//     try {
-//         const response = await fetch(uploadUrl, {
-//             method: 'PUT',
-//             body: formData,
-//             headers: {
-//                 'Content-Type': 'multipart/form-data',
-//             },
-//         });
-
-//         if (response.ok) {
-//             console.log('Image uploaded successfully', uploadUrl);
-//         } else {
-//             console.error('Image upload failed', response.status, response.statusText);
-//         }
-//     } catch (error) {
-//         console.error('Error uploading image', error);
-//     }
-// };

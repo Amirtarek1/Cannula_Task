@@ -10,10 +10,12 @@ import Correct_Checkbox from "../../assets/Icons/Correct_Checkbox.svg";
 import ToggleSwitch from 'toggle-switch-react-native';
 import Main_Button from '../../Component/Main_Button';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Checkbox from "../../assets/Icons/Checkbox.svg";
+import { useNavigation } from '@react-navigation/native';
 
 
 const Home_visita = ({ Flow_one }) => {
+    const navigation = useNavigation();
+
     const initialTimes = {
         sun: [{ from: '9 : 00 ص', to: '12 : 00 م' }],
         mon: [{ from: '9 : 00 ص', to: '12 : 00 م' }],
@@ -366,10 +368,12 @@ const Home_visita = ({ Flow_one }) => {
                 elevation: 10,
                 shadowOpacity: .7,
             }}>
-                <Main_Button Title_Button={"التالي"} />
+                {/* I know he must go to Home but i if i make that will repeate again because i can't use Apis cause i didn't have access to get token   */}
+                <Main_Button Title_Button={"التالي"} confirm={()=>navigation.navigate("Apply_to_Join")}/>
             </View>
         </>
     );
+  
 };
 
 export default Home_visita;
